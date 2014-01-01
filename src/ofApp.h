@@ -19,9 +19,14 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-    ofVideoPlayer movie;
+    ofVideoPlayer movie, movie2;
     
-    ofFbo frameStore[12];
+    ofFbo frameStore[12][12];
     
+    int numRows, numColumns;
+    
+    bool dualMovie;
+    
+    int scaleMovie;
 		
 };
