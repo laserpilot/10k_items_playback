@@ -24,7 +24,7 @@ void ofApp::setup(){
     //Allocate the FBO's that will be written into
     for (int i=0; i<12; i++) {
         for(int j=0; j<12; j++){
-            frameStore[i][j].allocate(movie.getWidth()/scaleMovie,movie.getHeight()/scaleMovie,GL_RGB); //be careful here! allocating 12x12fbos which will possibly eat up allll of your video ram - we are cutting it down to half the movie size here, but it could probably be cut down to a half
+            frameStore[i][j].allocate(movie.getWidth()/scaleMovie,movie.getHeight()/scaleMovie,GL_RGB); //be careful here! allocating 12x12fbos which will possibly eat up allll of your video ram - we are cutting it down to half the movie size here, but it could probably be cut down to a quarter
             
             frameStore[i][j].begin();
             ofClear(0, 0, 0, 0);
@@ -32,8 +32,8 @@ void ofApp::setup(){
         }
     }
     
-    numRows = 5;
-    numColumns = 5;
+    numRows = 7;
+    numColumns = 7;
 
 }
 
@@ -73,12 +73,21 @@ void ofApp::draw(){
 
     int counter = 0;
     for(int i=0; i<numRows; i++){ //3 columns
+//        ofPushMatrix();
+//                    ofTranslate(0,fmod((i+1+.5*sin(fmod(ofGetElapsedTimef(),6)))*fmod(ofGetElapsedTimef(),10)*80, (ofGetHeight()/(numRows-2)))-(ofGetHeight()/(numRows-2))); //need to figure out downward shift
         for (int j=0; j<numColumns; j++) {
             int ranFbo = ofRandom(0,11);
-            frameStore[counter%12][ranFbo].draw(j*(ofGetWidth()/numColumns), i*(ofGetHeight()/numRows), ofGetWidth()/numColumns, .75*ofGetWidth()/numColumns);
-            counter++;//regardless of number of columns, lets just keep this looping
-        }
+            ofPushMatrix();
+            
+            ofTranslate(fmod((i+1+.5*sin(fmod(ofGetElapsedTimef(),6)))*fmod(ofGetElapsedTimef(),10)*80, (ofGetWidth()/(numColumns-2)))-(ofGetWidth()/(numColumns-2)),0); //translates sideways
+            //ofTranslate(0,fmod((i+1+.5*sin(fmod(ofGetElapsedTimef(),6)))*fmod(ofGetElapsedTimef(),10)*80, (ofGetHeight()/(numRows-2)))-(ofGetHeight()/(numRows-2)));
+            frameStore[counter%12][ranFbo].draw(j*(ofGetWidth()/(numColumns-2)), i*(ofGetHeight()/(numRows-2)), ofGetWidth()/(numColumns-2), .75*ofGetWidth()/(numColumns-2));
 
+            counter++;//regardless of number of columns, lets just keep this looping
+            ofPopMatrix();
+        }
+    
+        //ofPopMatrix();
     }
     
     ofDrawBitmapStringHighlight(ofToString(ofGetFrameRate()),20,20);
